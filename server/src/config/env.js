@@ -8,8 +8,14 @@ for (const key of requiredEnvVars) {
   }
 }
 
+const parseUrls = (value) =>
+  (value || "")
+    .split(",")
+    .map((url) => url.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+
 module.exports = {
-  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  frontendUrls: parseUrls(process.env.FRONTEND_URLS || process.env.FRONTEND_URL || "http://localhost:5173"),
   port: process.env.PORT || 4000,
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,

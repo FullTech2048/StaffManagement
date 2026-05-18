@@ -2,16 +2,18 @@ const cors = require("cors");
 const express = require("express");
 const employeeRoutes = require("./routes/employeeRoutes");
 const errorHandler = require("./middleware/errorHandler");
-const { frontendUrl } = require("./config/env");
+const { frontendUrls } = require("./config/env");
 
 const app = express();
 
-const allowedOrigins = new Set([frontendUrl, "http://localhost:5173"].filter(Boolean));
+const allowedOrigins = new Set([...frontendUrls, "http://localhost:5173"]);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.has(origin)) {
+      const normalizedOrigin = origin?.replace(/\/$/, "");
+
+      if (!normalizedOrigin || allowedOrigins.has(normalizedOrigin)) {
         return callback(null, true);
       }
 

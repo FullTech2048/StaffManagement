@@ -63,7 +63,7 @@ Set these Railway environment variables:
 ```bash
 SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-FRONTEND_URL=https://your-vercel-app.vercel.app
+FRONTEND_URLS=https://your-vercel-app.vercel.app
 ```
 
 Railway provides `PORT` automatically, so you do not need to set it there. After deploy, copy the Railway public domain, for example `https://your-api.up.railway.app`.
@@ -87,7 +87,7 @@ Redeploy Vercel after changing `VITE_API_BASE_URL`; Vite embeds this value at bu
 
 ### Production CORS
 
-The backend only allows requests from `FRONTEND_URL` and local Vite development. Make sure Railway `FRONTEND_URL` exactly matches the deployed Vercel URL, including `https://` and without a trailing slash.
+The backend only allows requests from `FRONTEND_URLS` and local Vite development. Make sure Railway `FRONTEND_URLS` includes the deployed Vercel URL, including `https://`. Multiple frontend URLs can be comma-separated, for example `https://your-vercel-app.vercel.app,https://your-custom-domain.com`.
 
 ## API
 
