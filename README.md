@@ -48,6 +48,47 @@ npm run dev:client
 
 The API runs on `http://localhost:4000` and the React app runs on `http://localhost:5173`.
 
+## Deployment
+
+### Backend on Railway
+
+Create a Railway service from this repository and use these settings:
+
+- Root directory: `server`
+- Install command: `npm install`
+- Start command: `npm start`
+
+Set these Railway environment variables:
+
+```bash
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+FRONTEND_URL=https://your-vercel-app.vercel.app
+```
+
+Railway provides `PORT` automatically, so you do not need to set it there. After deploy, copy the Railway public domain, for example `https://your-api.up.railway.app`.
+
+### Frontend on Vercel
+
+Create a Vercel project from this repository and use these settings:
+
+- Root directory: `client`
+- Framework preset: `Vite`
+- Build command: `npm run build`
+- Output directory: `dist`
+
+Set this Vercel environment variable:
+
+```bash
+VITE_API_BASE_URL=https://your-api.up.railway.app/api
+```
+
+Redeploy Vercel after changing `VITE_API_BASE_URL`; Vite embeds this value at build time.
+
+### Production CORS
+
+The backend only allows requests from `FRONTEND_URL` and local Vite development. Make sure Railway `FRONTEND_URL` exactly matches the deployed Vercel URL, including `https://` and without a trailing slash.
+
 ## API
 
 - `GET /api/employees` - list active employees with signed photo URLs.

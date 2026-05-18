@@ -9,6 +9,7 @@ for (const key of requiredEnvVars) {
 }
 
 module.exports = {
+  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
   port: process.env.PORT || 4000,
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,

@@ -2,10 +2,23 @@ const cors = require("cors");
 const express = require("express");
 const employeeRoutes = require("./routes/employeeRoutes");
 const errorHandler = require("./middleware/errorHandler");
+const { frontendUrl } = require("./config/env");
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = new Set([frontendUrl, "http://localhost:5173"].filter(Boolean));
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  }),
+);
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
