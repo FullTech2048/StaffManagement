@@ -1,0 +1,24 @@
+{
+  "name": "staffmanagement",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Employee management module with React, Express, and Supabase",
+  "scripts": {
+    "dev": "npm run dev --prefix server & npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "start": "npm run start --prefix server",
+    "build": "npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FullTech2048/StaffManagement.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FullTech2048/StaffManagement/issues"
+  },
+  "homepage": "https://github.com/FullTech2048/StaffManagement#readme"
+}
