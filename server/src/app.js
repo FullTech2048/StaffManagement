@@ -1,5 +1,6 @@
 const cors = require("cors");
 const express = require("express");
+const authRoutes = require("./routes/authRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const { frontendUrls } = require("./config/env");
@@ -27,6 +28,7 @@ app.get("/api/health", (req, res) => {
   res.json({ data: { status: "ok" } });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 
 app.use((req, res) => {

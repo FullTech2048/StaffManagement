@@ -34,3 +34,19 @@ insert into storage.buckets (id, name, public)
 values ('employee-photos', 'employee-photos', false)
 on conflict (id) do update
 set public = false;
+
+create table if not exists public.admin_profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null unique references auth.users(id) on delete cascade,
+  full_name text not null,
+  email text not null unique,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+drop trigger if exists admin_profiles_set_updated_at on public.admin_profiles;
+
+create trigger admin_profiles_set_updated_at
+before update on public.admin_profiles
+for each row
+execute function public.set_updated_at();

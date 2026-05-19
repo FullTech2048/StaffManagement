@@ -40,6 +40,13 @@ button:disabled {
   margin-bottom: 28px;
 }
 
+.hero-topline {
+  align-items: start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
 .hero h1,
 .section-heading h2 {
   margin: 0;
@@ -53,6 +60,10 @@ button:disabled {
 .hero p:last-child {
   color: #5f6d7e;
   max-width: 760px;
+}
+
+.muted-text {
+  color: #5f6d7e;
 }
 
 .eyebrow {
@@ -92,6 +103,39 @@ button:disabled {
   gap: 16px;
 }
 
+.auth-shell {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.auth-card {
+  display: grid;
+  gap: 18px;
+  max-width: 440px;
+  width: 100%;
+}
+
+.auth-card h1 {
+  font-size: 2.25rem;
+  line-height: 1;
+  margin: 0;
+}
+
+.auth-link {
+  color: #5f6d7e;
+  margin: 0;
+  text-align: center;
+}
+
+.auth-link a {
+  color: #3157d5;
+  font-weight: 800;
+}
+
+.auth-card label,
 .employee-form label {
   color: #344054;
   display: grid;
@@ -99,6 +143,7 @@ button:disabled {
   gap: 8px;
 }
 
+.auth-card input,
 .employee-form input,
 .employee-form select,
 .employee-form textarea {
@@ -108,6 +153,7 @@ button:disabled {
   padding: 11px 12px;
 }
 
+.auth-card input:focus,
 .employee-form input:focus,
 .employee-form select:focus,
 .employee-form textarea:focus {

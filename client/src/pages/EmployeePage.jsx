@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { employeeApi } from "../api/employeeApi.js";
 import EmployeeForm from "../components/EmployeeForm.jsx";
 import EmployeeTable from "../components/EmployeeTable.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function EmployeePage() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -28,6 +33,20 @@ function EmployeePage() {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  const handleLogout = async () => {
+    setError("");
+    setIsLoggingOut(true);
+
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (logoutError) {
+      setError(logoutError.message);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const handleSubmit = async (values) => {
     setIsSubmitting(true);
@@ -77,12 +96,20 @@ function EmployeePage() {
   return (
     <main className="page-shell">
       <header className="hero">
-        <p className="eyebrow">Phase 1</p>
-        <h1>Employee Management</h1>
+        <div className="hero-topline">
+          <div>
+            <p className="eyebrow">Phase 1</p>
+            <h1>Employee Management</h1>
+          </div>
+          <button className="secondary-button" disabled={isLoggingOut} type="button" onClick={handleLogout}>
+            {isLoggingOut ? "Signing out..." : "Logout"}
+          </button>
+        </div>
         <p>
           Manage employee profiles, private Supabase photo storage, and unique card numbers for future recognition
           workflows.
         </p>
+        {user?.email ? <p className="muted-text">Signed in as {user.email}</p> : null}
       </header>
 
       {error ? <div className="alert error-alert">{error}</div> : null}

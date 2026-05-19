@@ -103,6 +103,14 @@ const getEmployeeById = async (id) => {
   return withSignedPhotoUrl(data);
 };
 
+const getEmployeePhotoUrl = async (id) => {
+  const employee = await getEmployeeById(id);
+
+  return {
+    photo_url: employee.photo_url,
+  };
+};
+
 const createEmployee = async (body, photo) => {
   const payload = normalizeEmployeePayload(body);
   validateCreatePayload(payload);
@@ -169,6 +177,7 @@ const softDeleteEmployee = async (id) => {
 module.exports = {
   createEmployee,
   getEmployeeById,
+  getEmployeePhotoUrl,
   listEmployees,
   softDeleteEmployee,
   updateEmployee,

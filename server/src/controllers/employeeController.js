@@ -10,6 +10,11 @@ const getEmployee = async (req, res) => {
   res.json({ data: employee });
 };
 
+const getEmployeePhotoUrl = async (req, res) => {
+  const photoUrl = await employeeService.getEmployeePhotoUrl(req.params.id);
+  res.json({ data: photoUrl });
+};
+
 const createEmployee = async (req, res) => {
   const employee = await employeeService.createEmployee(req.body, req.file);
   res.status(201).json({ data: employee });
@@ -29,6 +34,7 @@ module.exports = {
   createEmployee,
   deleteEmployee,
   getEmployee,
+  getEmployeePhotoUrl,
   listEmployees,
   updateEmployee,
 };
