@@ -34,19 +34,19 @@ function EmployeeTable({ employees, onDelete, onEdit }) {
           <tbody>
             {employees.map((employee) => (
               <tr key={employee.id}>
-                <td>
+                <td data-label="Photo">
                   {employee.photo_url ? (
                     <img className="employee-photo" src={employee.photo_url} alt={`${employee.full_name} profile`} />
                   ) : (
                     <div className="photo-placeholder">No photo</div>
                   )}
                 </td>
-                <td>{employee.full_name}</td>
-                <td>{employee.gender || "-"}</td>
-                <td>{employee.date_of_birth || "-"}</td>
-                <td>{employee.address || "-"}</td>
-                <td>{employee.card_number}</td>
-                <td>
+                <td data-label="Full name">{employee.full_name}</td>
+                <td data-label="Gender">{employee.gender || "-"}</td>
+                <td data-label="Date of birth">{employee.date_of_birth || "-"}</td>
+                <td data-label="Address">{employee.address || "-"}</td>
+                <td data-label="Card number">{employee.card_number}</td>
+                <td data-label="Actions">
                   <div className="action-row">
                     <button className="secondary-button" type="button" onClick={() => onEdit(employee)}>
                       Edit

@@ -64,71 +64,84 @@ function AdminSignup() {
 
   return (
     <main className="auth-shell">
-      <form className="auth-card card" onSubmit={handleSubmit}>
-        <div>
-          <p className="eyebrow">Admin access</p>
-          <h1>Create admin account</h1>
-          <p className="muted-text">Sign up with Supabase Auth to manage employees.</p>
+      <section className="auth-panel">
+        <div className="auth-visual signup-visual" aria-hidden="true">
+          <div className="visual-badge">Secure admin workspace</div>
+          <div className="visual-card">
+            <span className="visual-avatar">SM</span>
+            <div>
+              <strong>Staff operations</strong>
+              <p>Profiles, photos, and card numbers in one protected dashboard.</p>
+            </div>
+          </div>
         </div>
 
-        {error ? <div className="alert error-alert">{error}</div> : null}
+        <form className="auth-card" onSubmit={handleSubmit}>
+          <div>
+            <p className="eyebrow">Admin access</p>
+            <h1>Create admin account</h1>
+            <p className="muted-text">Register a protected admin profile for employee management.</p>
+          </div>
 
-        <label>
-          Email
-          <input
-            autoComplete="email"
-            name="email"
-            required
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
+          {error ? <div className="alert error-alert">{error}</div> : null}
 
-        <label>
-          Full name
-          <input
-            autoComplete="name"
-            name="fullName"
-            required
-            type="text"
-            value={fullName}
-            onChange={(event) => setFullName(event.target.value)}
-          />
-        </label>
+          <label>
+            Email
+            <input
+              autoComplete="email"
+              name="email"
+              required
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
 
-        <label>
-          Password
-          <input
-            autoComplete="new-password"
-            name="password"
-            required
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
+          <label>
+            Full name
+            <input
+              autoComplete="name"
+              name="fullName"
+              required
+              type="text"
+              value={fullName}
+              onChange={(event) => setFullName(event.target.value)}
+            />
+          </label>
 
-        <label>
-          Confirm password
-          <input
-            autoComplete="new-password"
-            name="confirmPassword"
-            required
-            type="password"
-            value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-          />
-        </label>
+          <label>
+            Password
+            <input
+              autoComplete="new-password"
+              name="password"
+              required
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
 
-        <button className="primary-button" disabled={isSubmitting || loading} type="submit">
-          {isSubmitting ? "Creating account..." : "Sign up"}
-        </button>
+          <label>
+            Confirm password
+            <input
+              autoComplete="new-password"
+              name="confirmPassword"
+              required
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+            />
+          </label>
 
-        <p className="auth-link">
-          Already have an account? <Link to="/login">Sign in</Link>
-        </p>
-      </form>
+          <button className="primary-button" disabled={isSubmitting || loading} type="submit">
+            {isSubmitting ? "Creating account..." : "Sign up"}
+          </button>
+
+          <p className="auth-link">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
+        </form>
+      </section>
     </main>
   );
 }

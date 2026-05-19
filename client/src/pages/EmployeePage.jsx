@@ -100,16 +100,31 @@ function EmployeePage() {
           <div>
             <p className="eyebrow">Phase 1</p>
             <h1>Employee Management</h1>
+            <p>
+              Manage employee profiles, private Supabase photo storage, and unique card numbers for future recognition
+              workflows.
+            </p>
           </div>
           <button className="secondary-button" disabled={isLoggingOut} type="button" onClick={handleLogout}>
             {isLoggingOut ? "Signing out..." : "Logout"}
           </button>
         </div>
-        <p>
-          Manage employee profiles, private Supabase photo storage, and unique card numbers for future recognition
-          workflows.
-        </p>
-        {user?.email ? <p className="muted-text">Signed in as {user.email}</p> : null}
+        <div className="hero-metrics">
+          <div className="metric-card">
+            <span>{employees.length}</span>
+            <p>Active employees</p>
+          </div>
+          <div className="metric-card">
+            <span>{employees.filter((employee) => employee.photo_url).length}</span>
+            <p>Profiles with photos</p>
+          </div>
+          {user?.email ? (
+            <div className="metric-card metric-wide">
+              <span>Admin</span>
+              <p>{user.email}</p>
+            </div>
+          ) : null}
+        </div>
       </header>
 
       {error ? <div className="alert error-alert">{error}</div> : null}
