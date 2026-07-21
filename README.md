@@ -1,165 +1,98 @@
-# StaffManagement
+# Staff Management
 
-Phase 1 employee management module built with React, Express, Supabase Auth, Supabase PostgreSQL, and private Supabase Storage.
+Phase-1 **employee administration** module: secure admin auth, employee CRUD, and private photo storage.
 
-## Structure
+Built for teams that need a clean separation between a React admin UI, an Express API, and Supabase (Auth + PostgreSQL + private Storage).
 
-- `client/` - React + Vite employee management UI.
-- `server/` - Express API using the Supabase service role key server-side only.
-- `supabase/employee_management.sql` - employees/admin tables, updated_at triggers, and private `employee-photos` bucket setup.
+## Highlights
 
-## Setup
+- Admin signup/login via Supabase Auth (service role used only on the server)
+- Employee CRUD with soft-delete (`is_active`)
+- Private `employee-photos` bucket — DB stores paths; API returns **signed URLs**
+- Transactional admin emails via Resend
+- Deploy path documented for **Railway** (API) + **Vercel** (UI)
 
-1. Install dependencies:
+## Architecture
+
+```
+StaffManagement/
+├── client/     # React + Vite + TypeScript admin UI
+├── server/     # Express API (Supabase service role, CORS allowlist)
+└── supabase/   # SQL schema, triggers, storage bucket setup
+```
+
+| Layer | Responsibility |
+| --- | --- |
+| **Client** | Admin auth screens, employee list/forms, photo upload UX |
+| **Server** | Authz with Bearer tokens, employee APIs, signed URL generation |
+| **Supabase** | Auth users, `admin_profiles`, employees table, private storage |
+
+```mermaid
+flowchart LR
+  UI[React Admin UI] -->|anon key + Bearer token| API[Express API]
+  API -->|service role| SB[(Supabase Auth / DB / Storage)]
+  API -->|transactional mail| Resend
+```
+
+## Stack
+
+![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=white)
+![Express](https://img.shields.io/badge/Express-API-000000?logo=express&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20Postgres-3FCF8E?logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?logo=vercel&logoColor=white)
+![Railway](https://img.shields.io/badge/Railway-Backend-0B0D0E?logo=railway&logoColor=white)
+
+## Quick start
 
 ```bash
 npm install --prefix server
 npm install --prefix client
 ```
 
-2. Create Supabase schema and storage bucket:
-
-Run `supabase/employee_management.sql` in the Supabase SQL editor for your project.
-
-3. Configure environment variables:
-
-Create `server/.env` from `server/.env.example`:
+1. Run `supabase/employee_management.sql` in the Supabase SQL editor.
+2. Copy `server/.env.example` → `server/.env` and `client/.env.example` → `client/.env`.
+3. **Never** put the Supabase service role key in the frontend.
 
 ```bash
-PORT=4000
-FRONTEND_URLS=http://localhost:5173
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-RESEND_API_KEY=your-resend-api-key
-RESEND_FROM_EMAIL=Staff Management <onboarding@resend.dev>
+npm run dev:server   # http://localhost:4000
+npm run dev:client   # http://localhost:5173
 ```
 
-Create `client/.env` from `client/.env.example`:
+Create an admin at `/signup`, then manage employees at `/employees`.
 
-```bash
-VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-VITE_API_URL=http://localhost:4000/api
+## API (summary)
+
+| Method | Path | Notes |
+| --- | --- | --- |
+| `POST` | `/api/auth/signup` | Create admin user + profile + Resend email |
+| `GET` | `/api/employees` | List active employees + signed photo URLs |
+| `GET` | `/api/employees/:id` | Single employee |
+| `POST` | `/api/employees` | Create (+ optional multipart `photo`) |
+| `PUT` | `/api/employees/:id` | Update (+ optional photo replace) |
+| `DELETE` | `/api/employees/:id` | Soft delete |
+
+Employee routes require:
+
+```http
+Authorization: Bearer <supabase_access_token>
 ```
-
-Never place the Supabase service role key in frontend files. The frontend must only use the Supabase anon key.
-
-4. Run locally:
-
-```bash
-npm run dev:server
-npm run dev:client
-```
-
-The API runs on `http://localhost:4000` and the React app runs on `http://localhost:5173`.
-
-5. Create an admin account:
-
-Visit `http://localhost:5173/signup` and sign up with an email, full name, and password. The app creates the Supabase Auth user and stores the profile in `admin_profiles`.
-Signup is handled by the Express API with the Supabase service role key, so Supabase Auth email templates are not used. Admin signup emails are sent through Resend.
 
 ## Deployment
 
-### Backend on Railway
+| Surface | Host | Root |
+| --- | --- | --- |
+| API | Railway | `server/` |
+| UI | Vercel | `client/` |
 
-Create a Railway service from this repository and use these settings:
+Set `FRONTEND_URLS` on the API to your Vercel origin(s). Set `VITE_API_URL` on the client to the Railway API `/api` base. Full env lists live in `.env.example` files.
 
-- Root directory: `server`
-- Install command: `npm install`
-- Start command: `npm start`
+## Security notes
 
-Set these Railway environment variables:
+- Service role key: **server only**
+- Photos: private bucket; signed URLs at read time
+- CORS: allowlist via `FRONTEND_URLS`
+- Soft delete preserves auditability over hard deletes
 
-```bash
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-FRONTEND_URLS=https://your-vercel-app.vercel.app
-RESEND_API_KEY=your-resend-api-key
-RESEND_FROM_EMAIL=Staff Management <admin@your-domain.com>
-```
+## Status
 
-Railway provides `PORT` automatically, so you do not need to set it there. After deploy, copy the Railway public domain, for example `https://your-api.up.railway.app`.
-
-### Frontend on Vercel
-
-Create a Vercel project from this repository and use these settings:
-
-- Root directory: `client`
-- Framework preset: `Vite`
-- Build command: `npm run build`
-- Output directory: `dist`
-
-Set this Vercel environment variable:
-
-```bash
-VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-VITE_API_URL=https://your-api.up.railway.app/api
-```
-
-Redeploy Vercel after changing frontend environment variables; Vite embeds these values at build time.
-
-### Production CORS
-
-The backend only allows requests from `FRONTEND_URLS` and local Vite development. Make sure Railway `FRONTEND_URLS` includes the deployed Vercel URL, including `https://`. Multiple frontend URLs can be comma-separated, for example `https://your-vercel-app.vercel.app,https://your-custom-domain.com`.
-
-## API
-
-- `GET /api/employees` - list active employees with signed photo URLs.
-- `GET /api/employees/:id` - get one active employee with a signed photo URL.
-- `GET /api/employees/:id/photo-url` - get one active employee's signed photo URL.
-- `POST /api/employees` - create an employee with optional multipart `photo`.
-- `PUT /api/employees/:id` - update employee fields and optionally replace the photo.
-- `DELETE /api/employees/:id` - soft delete by setting `is_active = false`.
-- `POST /api/auth/signup` - create a Supabase Auth admin user, save `admin_profiles`, and send a Resend email.
-
-All employee routes require a Supabase Auth admin access token:
-
-```bash
-Authorization: Bearer <access_token>
-```
-
-Employee photos are uploaded to the private `employee-photos` bucket under `employees/{employeeId}/{uuid}.{extension}`. The database stores only `photo_path`; the backend generates signed URLs when records are read.
-
-## Admin Auth SQL
-
-Run `supabase/employee_management.sql`, or run this admin-specific SQL in the Supabase SQL editor if the employee schema already exists:
-
-```sql
-create table if not exists public.admin_profiles (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null unique references auth.users(id) on delete cascade,
-  full_name text not null,
-  email text not null unique,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
-create or replace function public.set_updated_at()
-returns trigger
-language plpgsql
-as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-
-drop trigger if exists admin_profiles_set_updated_at on public.admin_profiles;
-
-create trigger admin_profiles_set_updated_at
-before update on public.admin_profiles
-for each row
-execute function public.set_updated_at();
-```
-
-## Testing Admin Access
-
-1. Start the backend and frontend with the env vars above.
-2. Visit `http://localhost:5173/signup`.
-3. Sign up with email, full name, password, and confirm password.
-4. Confirm a Supabase Auth user and an `admin_profiles` row are created.
-5. Confirm Resend sends the admin account email.
-6. Confirm `/employees` loads and employee create/edit/delete/photo upload still work.
-7. Sign out and confirm `/employees` redirects to `/login`.
-8. Call an employee API without `Authorization` and confirm it returns `401`.
+Production-oriented Phase 1 module. Extend with roles/permissions, audit log, and org multi-tenancy as needed.
